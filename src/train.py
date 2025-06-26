@@ -109,6 +109,7 @@ class TrainAutoEncoder:
                 timestamp=self.timestamp
             )
         )
+        print(f"tensorboard_log_dir={tensorboard_log_dir}")
 
         self.writer = (
             SummaryWriter(

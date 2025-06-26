@@ -130,6 +130,11 @@ python -m src.train
 <!-- cSpell:enable -->
 
 
+find . -type d -iname 'log_dir'
+find . -type d -iname "*training*vis*"
+find . -type d -iname "*log*"
+
+
 # Data 
 
 1. https://www.kaggle.com/datasets/wardaddy24/marble-surface-anomaly-detection-2
