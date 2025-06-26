@@ -181,6 +181,8 @@ def main() -> None:
     if aug_cfg.get("do_augmentation"):
         train_data_dir = dataset_images_path_selector().get(aug_cfg.get("dataset_type"), {}).get("train")
         aug_out_dir = dataset_images_path_selector().get(aug_cfg.get("dataset_type"), {}).get("aug")
+        print(f"train_data_dir={train_data_dir}")
+        print(f"aug_out_dir={aug_out_dir}")
 
         if not train_data_dir or not aug_out_dir:
             raise ValueError("Error: Missing or invalid paths for training data or augmentation output.")

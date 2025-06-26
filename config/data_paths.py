@@ -9,11 +9,16 @@ class _Const(object):
 
     user = os.getlogin()
     root_mapping = {
-        'ricsi': {
-            "PROJECT_ROOT": 'C:/Users/ricsi/Documents/research/autoencoders_for_visual_defect_detection',
-            "DATASET_ROOT": 'D:/storage/AE/datasets',
-            "STORAGE_ROOT": 'D:/storage/AE'
+        'hmf': {
+            "PROJECT_ROOT": '/mnt/ssd2/hmf/VSCodeProjects/autoencoders_for_visual_defect_detection',
+            "DATASET_ROOT": '/mnt/ssd2/hmf/VSCodeProjects/autoencoders_for_visual_defect_detection/datasets',
+            "STORAGE_ROOT": '/mnt/ssd2/hmf/VSCodeProjects/autoencoders_for_visual_defect_detection/results'
         }
+        # 'ricsi': {
+        #     "PROJECT_ROOT": 'C:/Users/ricsi/Documents/research/autoencoders_for_visual_defect_detection',
+        #     "DATASET_ROOT": 'D:/storage/AE/datasets',
+        #     "STORAGE_ROOT": 'D:/storage/AE'
+        # }
     }
 
     if user in root_mapping:

@@ -68,8 +68,14 @@ def main() -> None:
     path_covered = (
         dataset_images_path_selector().get(cfg.get("dataset_type")).get("noise")
     )
+    print(f"path_good={path_good}")
+    print(f"path_covered={path_covered}")
 
-    images_good = file_reader(path_good, "JPG")
+    # images_good = file_reader(path_good, "JPG")
+    assert path_covered is not None
+    assert path_good is not None
+    images_good = file_reader(path_good, "png")
+    print(f"len(images_good)=len(images_good)")
 
     with ProcessPoolExecutor(max_workers=cfg.get("num_workers")) as executor:
         futures = []
