@@ -8,7 +8,8 @@ import torch.optim as optim
 from tqdm import tqdm
 from torch.optim.lr_scheduler import StepLR
 from torch.utils.data import DataLoader, random_split
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
+from torch.utils.tensorboard.writer import SummaryWriter
 from torchinfo import summary
 
 from config.network_config import network_configs
@@ -35,6 +36,7 @@ class TrainAutoEncoder:
                 json_filename=json_config_selector("training")["config"]
             )
         )
+        assert self.train_cfg is not None
 
         if self.train_cfg.get("seed"):
             set_seed(seed=1234)
@@ -52,6 +54,7 @@ class TrainAutoEncoder:
         network_cfg = (
             network_configs(self.train_cfg).get(self.network_type)
         )
+        assert network_cfg is not None
 
         self.device = (
             device_selector(
@@ -66,12 +69,16 @@ class TrainAutoEncoder:
                 network_cfg=network_cfg)
         ).to(self.device)
 
+        input_channel = network_cfg.get("input_channel")
+        img_size = network_cfg.get("img_size")
+        assert input_channel is not None
+        assert img_size is not None
         summary(
             model=self.model,
             input_size=(
-                network_cfg.get("input_channel"),
-                network_cfg.get("img_size")[0],
-                network_cfg.get("img_size")[1]
+                input_channel,
+                img_size[0],
+                img_size[1],
             )
         )
 
@@ -102,9 +109,13 @@ class TrainAutoEncoder:
         )
 
         # Setup directories to save data
+        dataset_type_selector = dataset_data_path_selector().get(self.dataset_type)
+        assert dataset_type_selector is not None
+        log_dir = dataset_type_selector.get("log_dir")
+        assert log_dir is not None
         tensorboard_log_dir = (
             create_save_dirs(
-                directory_path=dataset_data_path_selector().get(self.dataset_type).get("log_dir"),
+                directory_path=log_dir,
                 network_type=self.network_type,
                 timestamp=self.timestamp
             )
@@ -117,9 +128,11 @@ class TrainAutoEncoder:
             )
         )
 
+        model_weights_dir=dataset_type_selector.get("model_weights_dir")
+        assert model_weights_dir is not None
         self.save_path = (
             create_save_dirs(
-                directory_path=dataset_data_path_selector().get(self.dataset_type).get("model_weights_dir"),
+                directory_path=model_weights_dir,
                 network_type=self.network_type,
                 timestamp=self.timestamp
             )
@@ -143,18 +156,22 @@ class TrainAutoEncoder:
                 - `val_dataloader` (DataLoader): DataLoader for the validation dataset.
         """
 
+        dataset_type_selector = dataset_images_path_selector().get(self.dataset_type)
+        assert dataset_type_selector is not None
+        assert self.train_cfg is not None
+
         if self.network_type in ["AE", "AEE"]:
             dataset = (
                 MVTecDataset(
-                    root_dir=dataset_images_path_selector().get(self.dataset_type).get("aug"),
+                    root_dir=dataset_type_selector.get("aug"),
                     grayscale=self.train_cfg.get("grayscale")
                 )
             )
         else:
             dataset = (
                 MVTecDatasetDenoising(
-                    root_dir=dataset_images_path_selector().get(self.dataset_type).get("aug"),
-                    noise_dir=dataset_images_path_selector().get(self.dataset_type).get("noise"),
+                    root_dir=dataset_type_selector.get("aug"),
+                    noise_dir=dataset_type_selector.get("noise"),
                     grayscale=self.train_cfg.get("grayscale")
                 )
             )
@@ -245,10 +262,12 @@ class TrainAutoEncoder:
                 total=len(self.train_dataloader),
                 desc=colorama.Fore.GREEN + "Training"
         ):
+            assert self.train_cfg is not None
             results = self.forward_step(data)
 
             if len(results) == 3:
                 images, recon, train_loss = results
+                noise_images = None
             else:
                 images, noise_images, recon, train_loss = results
 
@@ -259,9 +278,13 @@ class TrainAutoEncoder:
 
             if (self.train_cfg.get("vis_during_training") and (epoch % self.train_cfg.get("vis_interval") == 0) and
                     batch_idx == 0):
+                dataset_type = dataset_data_path_selector().get(self.dataset_type)
+                assert dataset_type is not None
+                directory_path=dataset_type.get("training_vis")
+                assert directory_path is not None
                 vis_dir = (
                     create_save_dirs(
-                        directory_path=dataset_data_path_selector().get(self.dataset_type).get("training_vis"),
+                        directory_path=directory_path,
                         network_type=self.network_type,
                         timestamp=self.timestamp
                     )
@@ -329,6 +352,7 @@ class TrainAutoEncoder:
         train_losses = []
         valid_losses = []
 
+        assert self.train_cfg is not None
         for epoch in tqdm(range(self.train_cfg.get("epochs")), desc=colorama.Fore.LIGHTRED_EX + "Epochs"):
             train_losses = self.train_loop(epoch, train_losses)
             valid_losses = self.valid_loop(valid_losses)

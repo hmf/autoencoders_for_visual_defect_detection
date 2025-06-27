@@ -85,6 +85,7 @@ class TestAutoEncoder:
             self.test_images = (
                 file_reader(test_images_path, "png")
             )
+            print(f"test_images_path={test_images_path}")
 
             gt_images_path = (
                 test_path.get("ground_truth")
@@ -92,6 +93,7 @@ class TestAutoEncoder:
             self.gt_images = (
                 file_reader(gt_images_path, "png")
             )
+            print(f"gt_images_path={gt_images_path}")
 
             self.cached_gt_images = (
                 self.ground_truth_caching()

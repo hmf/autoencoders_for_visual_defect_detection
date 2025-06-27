@@ -1,7 +1,7 @@
 {
-  "network_type": "AEE",
-  "dataset_type": "cpu",
-  "subtest_folder": "cpua",
+  "network_type": "AE",
+  "dataset_type": "texture_1",
+  "subtest_folder": "defective",
   "vis_results": false,
   "vis_reconstruction": false,
   "grayscale": false,

@@ -62,6 +62,8 @@ pytorch_msssim~=1.0.0
 ```
 <!-- cSpell:enable -->
 
+# Training
+
 
 Changed `config/json_files/augmentation_config.json`:
 
@@ -129,10 +131,128 @@ python -m src.train
 ```
 <!-- cSpell:enable -->
 
+Where are the Tensorboard logs being written (`log_dir`)?
 
+<!-- cSpell:disable -->
+```shell
 find . -type d -iname 'log_dir'
 find . -type d -iname "*training*vis*"
 find . -type d -iname "*log*"
+```
+<!-- cSpell:enable -->
+
+None found. Changed the code and ow it prints the following:
+
+<!-- cSpell:disable -->
+```shell
+tensorboard_log_dir=/mnt/ssd2/hmf/VSCodeProjects/autoencoders_for_visual_defect_detection/results/data/texture_1/model_logs/AE/2025-06-27_10-25-07
+```
+<!-- cSpell:enable -->
+
+
+<!-- cSpell:disable -->
+```shell
+$ export LOG_DIR=/mnt/ssd2/hmf/VSCodeProjects/autoencoders_for_visual_defect_detection/results/data/texture_1/model_logs/AE/2025-06-27_10-25-07
+$ tensorboard --logdir $LOG_DIR
+$ tensorboard --load_fast=false --logdir $LOG_DIR
+```
+<!-- cSpell:enable -->
+
+Results:
+
+1. Seems to consistently converge
+1. Overfitting observed
+   1. Early stopping is  manually coded
+   1. Does not check for overfitting or non-divergence
+   1. Validation loss keeps lowering slowly (after 1.463 hours loss was 0.168)
+1. Some training differences
+   1. Model uses a final sigmoid layer in the output (used for "flattening" values?)
+   1. "epochs": 200
+   1. "img_size": [256, 256]
+   1. "crop_it": true
+   1. "crop_size": [128, 128]
+   1. `optim.Adam`
+   1. "batch_size": 128                                           (Different)
+   1. "learning_rate": 2e-4                                       (Different)
+   1. "latent_space_dimension": 500                               (Different)
+   1. Uses a the scheduler `StepLR`                               (Different)
+   1. Uses a static dataset of cropped images (12500 images)      (Different)
+   1. New models use noise in images for training (small squares) (Different)
+   1. Transforms:
+      1. `transforms.Grayscale(num_output_channels=1)`
+      1. `transforms.ToTensor()`
+      1. No scaling (normalization) used                          (Different)
+      1. Same for de-noising images
+
+Stopped experiment manually.
+
+# Testing
+
+
+Changed `config/json_files/training_config.json`
+
+From:
+
+<!-- cSpell:disable -->
+```shell
+  "network_type": "AEE",
+  "dataset_type": "cpu",
+  "subtest_folder": "cpua",
+```
+<!-- cSpell:enable -->
+
+
+<!-- cSpell:disable -->
+```shell
+  "network_type": "AE",
+  "dataset_type": "texture_1",
+  "subtest_folder": "texture_1a",
+```
+<!-- cSpell:enable -->
+
+<!-- cSpell:disable -->
+```shell
+python -m src.test
+```
+<!-- cSpell:enable -->
+
+Male sure the original test images and ground truth are copied to:
+
+<!-- cSpell:disable -->
+```shell
+test_images_path=/mnt/ssd2/hmf/VSCodeProjects/autoencoders_for_visual_defect_detection/datasets/texture_1/test/defective/test_images
+gt_images_path=/mnt/ssd2/hmf/VSCodeProjects/autoencoders_for_visual_defect_detection/datasets/texture_1/test/defective/ground_truth
+```
+<!-- cSpell:enable -->
+
+
+<!-- cSpell:disable -->
+```shell
+```
+<!-- cSpell:enable -->
+
+
+<!-- cSpell:disable -->
+```shell
+```
+<!-- cSpell:enable -->
+
+
+
+
+
+
+1. [TensorBoard Histogram Dashboard](https://github.com/tensorflow/tensorboard/blob/master/docs/r1/histograms.md)
+1. [The complete guide to ML model visualization with Tensorboard](https://cnvrg.io/tensorboard-guide/)
+   1. Implemented by Keras (`rom tensorflow.keras.callbacks import TensorBoard`)
+1. [machine-learning-articles/how-to-use-tensorboard-with-pytorch.md](https://github.com/christianversloot/machine-learning-articles/blob/main/how-to-use-tensorboard-with-pytorch.md)
+   1. TODO: example of how to record mol weights
+
+
+<!-- cSpell:disable -->
+```shell
+```
+<!-- cSpell:enable -->
 
 
 # Data 
