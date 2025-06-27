@@ -198,6 +198,8 @@ From:
   "network_type": "AEE",
   "dataset_type": "cpu",
   "subtest_folder": "cpua",
+  "vis_results": false,
+  "vis_reconstruction": false,
 ```
 <!-- cSpell:enable -->
 
@@ -206,7 +208,9 @@ From:
 ```shell
   "network_type": "AE",
   "dataset_type": "texture_1",
-  "subtest_folder": "texture_1a",
+  "subtest_folder": "defective",
+  "vis_results": true,
+  "vis_reconstruction": true,
 ```
 <!-- cSpell:enable -->
 
@@ -253,6 +257,32 @@ gt_images_path=/mnt/ssd2/hmf/VSCodeProjects/autoencoders_for_visual_defect_detec
 ```shell
 ```
 <!-- cSpell:enable -->
+
+# Modeling considerations
+
+AEs Regularization `R`:
+
+1. "In **sparse AEs** `R` is based on the Kullback-Leibler divergence or on the L1 norm, the purpose is to make the most of the hidden unit’s activations close to zero."
+1. **Contractive AEs** apply the Frobenius norm on the derivative of z as a function of x to make the model resistant to small perturbations; and in an information theoretic-learning autoencoder Renyi’s entropy is used.
+
+
+
+1. Physics-Informed Neural Network (PINN)
+   1. [Training of Physical Neural Networks](https://arxiv.org/pdf/2406.03372)
+   1. [Tutorials for Physics-Informed Neural Networks](https://github.com/nguyenkhoa0209/pinns_tutorial)
+   1. [A hands-on introduction to Physics-Informed Neural Networks for solving partial differential equations with benchmark tests taken from astrophysics and plasma physics](https://arxiv.org/abs/2403.00599v1)
+   
+1. (KAN: Kolmogorov-Arnold Networks)[https://arxiv.org/abs/2404.19756]
+   1. [Kolmogorov-Arnold Networks: a Critique](https://medium.com/@rubenszimbres/kolmogorov-arnold-networks-a-critique-2b37fea2112e)
+   1. [Exploring the Limitations of Kolmogorov-Arnold Networks in Classification: Insights to Software Training and Hardware Implementation](https://arxiv.org/abs/2407.17790v1)
+   1. [Can KAN Work? Exploring the Potential of Kolmogorov-Arnold Networks in Computer Vision](https://arxiv.org/abs/2411.06727v2)
+   1. [KAN or MLP: A Fairer Comparison](https://arxiv.org/abs/2407.16674)
+   1. [openkan.org/](http://openkan.org/)
+1. [Interpretable Deep Learning for New Physics Discovery ](https://www.youtube.com/watch?v=HKJB0Bjo6tQ)
+   1. [Discovering Symbolic Models from Deep Learning with Inductive Biases](https://arxiv.org/abs/2006.11287)
+   1. [Discovering Symbolic Models from Deep Learning with Inductive Biases](https://github.com/MilesCranmer/symbolic_deep_learning)
+1. [Probabilistic Knowledge Transfer for Deep Neural Networks](https://github.com/passalis/probabilistic_kt)
+
 
 
 # Data 

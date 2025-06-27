@@ -39,6 +39,7 @@ class TestAutoEncoder:
                 json_filename=json_config_selector("testing")["config"]
             )
         )
+        assert self.test_cfg is not None
 
         self.network_type = self.test_cfg.get("network_type")
         network_cfg = network_configs(train_cfg).get(self.network_type)
@@ -68,12 +69,15 @@ class TestAutoEncoder:
         train_dataset_path = (
             dataset_images_path_selector().get(self.dataset_type).get("train")
         )
+        print(f"train_dataset_path={train_dataset_path}")
         self.train_images = (
             file_reader(
                 file_path=train_dataset_path,
-                extension="JPG"
+                # extension="JPG"
+                extension="png"
             )
         )
+        print(f"len(self.train_images)={len(self.train_images)}")
 
         if not self.test_cfg.get("vis_reconstruction"):
             test_path = (
@@ -102,6 +106,7 @@ class TestAutoEncoder:
             roc_dir = (
                 dataset_data_path_selector().get(self.dataset_type).get("roc_plot")
             )
+            print(f"roc_dir={roc_dir}")
             self.save_roc_plot_dir = (
                 create_save_dirs(
                     directory_path=roc_dir,
@@ -113,6 +118,7 @@ class TestAutoEncoder:
             metrics_dir = (
                 dataset_data_path_selector().get(self.dataset_type).get("metrics")
             )
+            print(f"metrics_dir={metrics_dir}")
             self.metrics_save_dir = (
                 create_save_dirs(
                     directory_path=metrics_dir,
@@ -125,6 +131,7 @@ class TestAutoEncoder:
                 rec_vis_dir = (
                     dataset_data_path_selector().get(self.dataset_type).get("reconstruction_vis_images")
                 )
+                print(f"rec_vis_dir={rec_vis_dir}")
                 self.save_reconstruction_plot_dir = (
                     create_save_dirs(
                         directory_path=rec_vis_dir,
@@ -137,6 +144,7 @@ class TestAutoEncoder:
             rec_dir = (
                 dataset_data_path_selector().get(self.dataset_type).get("reconstruction_images")
             )
+            print(f"rec_dir={rec_dir}")
             self.save_reconstruction_dir = (
                 create_save_dirs(
                     directory_path=rec_dir,
